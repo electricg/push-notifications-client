@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Push notifications client">
+  <meta name="author" content="Giulia Alfonsi - @electric_g">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Push notifications client</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+input[disabled] + label {
+  color: #CCC;
+}
+input, label {
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+
+<div id="subscribe-wrapper" style="display: none;">
+  <input type="checkbox" id="subscribe" disabled>
+  <label for="subscribe"><span id="subscribe-label">Enable</span> Push notifications</label>
+</div>
+<div id="not-supported">Service Workers not supported</div>
+
+<script src="ui.js"></script>
+<script src="subscription.js"></script>
+<script src="notifications.js"></script>
+<script>
+var remoteUrl = 'http://127.0.0.1:8082';
+var ui = new window.UI();
+var subscription = new window.Subscription(remoteUrl);
+var notifications = new window.Notifications(ui, subscription);
+
+// Are service workers supported?
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    ui.action(notifications.toggle);
+  });
+  
+  navigator.serviceWorker.register('sw.js')
+  .then(notifications.init)
+  .catch(function(err) {
+    console.log(err);
+  });
+}
+</script>
+  
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "push-notifications-client",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Push notifications client",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m SimpleHTTPServer 8085"
+  },
+  "author": "Giulia Alfonsi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/electricg/push-notifications-client.git"
+  },
+  "homepage": "https://github.com/electricg/push-notifications-client#readme"
+}
