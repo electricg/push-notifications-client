@@ -3,6 +3,7 @@ window.Notifications = function(ui, s) {
   var isPushEnabled = false;
 
   function sendSubscriptionToServer(sub) {
+    console.log(sub);
     return s.sendSubscriptionToServer(sub);
   }
   function cancelSubscriptionFromServer(sub) {

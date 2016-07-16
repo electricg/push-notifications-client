@@ -1,4 +1,4 @@
-/* global self */
+/* global self, clients */
 self.addEventListener('install', function(event) {
   self.skipWaiting();
   console.log('Installed', event);
@@ -10,23 +10,47 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('push', function(event) {
   console.log('Received push');
-  let notificationTitle = 'Hello';
-  const notificationOptions = {
+  var notificationTitle = 'Hello';
+  var notificationOptions = {
     body: 'Default push message',
-    icon: 'icon.png',
-    tag: 'simple-push-demo-notification'
+    icon: 'icon.png'
   };
 
   if (event.data) {
-    const dataText = event.data.text();
     notificationTitle = 'Message from electric_g';
-    notificationOptions.body = dataText;
+    notificationOptions.body = event.data.text();
   }
 
   event.waitUntil(
-    Promise.all([
-      self.registration.showNotification(
-        notificationTitle, notificationOptions),
-    ])
+    self.registration.showNotification(notificationTitle, notificationOptions)
+  );
+});
+
+self.addEventListener('notificationclick', function(event) {
+  console.log('Notification click', event.notification);
+  // Android doesn't close the notification when you click it
+  // See http://crbug.com/463146
+  event.notification.close();
+  var url = 'https://github.com/electricg/push-notifications-client';
+  // Check if there's already a tab open with this URL.
+  // If yes: focus on the tab.
+  // If no: open a tab with the URL.
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window'
+    })
+    .then(function(windowClients) {
+      console.log('WindowClients', windowClients);
+      for (var i = 0; i < windowClients.length; i++) {
+        var client = windowClients[i];
+        console.log('WindowClient', client);
+        if (client.url === url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    })
   );
 });
