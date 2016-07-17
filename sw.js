@@ -1,4 +1,9 @@
 /* global self, clients */
+var TITLE = 'Message from electric_g';
+var OPEN_URL = 'https://electricg.github.io/push-notifications-client/';
+var BODY = 'Default push message';
+var ICON = 'icon.png';
+
 self.addEventListener('install', function(event) {
   self.skipWaiting();
   console.log('Installed', event);
@@ -10,15 +15,24 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('push', function(event) {
   console.log('Received push');
-  var notificationTitle = 'Hello';
+  var notificationTitle = TITLE;
   var notificationOptions = {
-    body: 'Default push message',
-    icon: 'icon.png'
+    body: BODY,
+    icon: ICON
   };
 
   if (event.data) {
-    notificationTitle = 'Message from electric_g';
-    notificationOptions.body = event.data.text();
+    var msg = {
+      t: TITLE,
+      b: BODY
+    };
+    try {
+      var tmp = JSON.parse(event.data.text());
+      msg.t = tmp.t || msg.t;
+      msg.b = tmp.b || msg.b;
+    } catch(e) {}
+    notificationTitle = msg.t;
+    notificationOptions.body = msg.b;
   }
 
   event.waitUntil(
@@ -31,7 +45,7 @@ self.addEventListener('notificationclick', function(event) {
   // Android doesn't close the notification when you click it
   // See http://crbug.com/463146
   event.notification.close();
-  var url = 'https://electricg.github.io/push-notifications-client/';
+  var url = OPEN_URL;
   // Check if there's already a tab open with this URL.
   // If yes: focus on the tab.
   // If no: open a tab with the URL.
