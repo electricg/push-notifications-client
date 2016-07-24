@@ -9,6 +9,11 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Push notifications client</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    if ((!location.port || location.port === '80') && location.protocol !== 'https:') {
+      location.protocol = 'https:';
+    }
+  </script>
   <style>
 input[disabled] + label {
   color: #CCC;
@@ -40,8 +45,9 @@ input, label {
 <script src="notifications.js"></script>
 <script>
 var remoteUrl = 'https://ele-push-notifications-server.herokuapp.com';
+var authHeader = 'PUSH-NOTIFICATION ';
 var ui = new window.UI();
-var subscription = new window.Subscription(remoteUrl);
+var subscription = new window.Subscription(remoteUrl, authHeader);
 var notifications = new window.Notifications(ui, subscription);
 
 // Are service workers supported?

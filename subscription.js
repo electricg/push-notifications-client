@@ -1,4 +1,4 @@
-window.Subscription = function(remoteUrl) {
+window.Subscription = function(remoteUrl, authHeader) {
   var sendPost = function(opt) {
     return new Promise(function(resolve, reject) {
       var request = new XMLHttpRequest();
@@ -28,6 +28,7 @@ window.Subscription = function(remoteUrl) {
     return new Promise(function(resolve, reject) {
       var request = new XMLHttpRequest();
       request.open('DELETE', opt.url, true);
+      request.setRequestHeader('Authorization', opt.auth);
       request.responseType = 'json';
 
       request.onload = function() {
@@ -77,7 +78,8 @@ window.Subscription = function(remoteUrl) {
     }
     var id = o[sub.endpoint];
     return sendDelete({
-      url: remoteUrl + '/client/' + id
+      url: remoteUrl + '/client/' + id,
+      auth: authHeader + 'endpoint=' + sub.endpoint + ',p256dh=' + sub.keys.p256dh + ',auth=' + sub.keys.auth 
     })
     .then(function(res) {
       try {
