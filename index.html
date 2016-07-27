@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Push notifications client">
+  <meta name="description" content="Push Notifications Client">
   <meta name="author" content="Giulia Alfonsi - @electric_g">
   <meta name="robots" content="noindex,nofollow">
   <title>Push notifications client</title>
@@ -15,30 +15,114 @@
     }
   </script>
   <style>
-input[disabled] + label {
-  color: #CCC;
+*, *:after, *:before {
+  box-sizing: border-box;
+}
+html {
+  font-size: 20px;
+}
+body {
+  background: #EEE;
+  color: #333;
+  font-family: sans-serif;
+  font-variant: small-caps;
+  margin: 0 auto;
+  max-width: 600px;
+  width: 95%;
+}
+h1 {
+  font-size: 1.2rem;
+}
+p {
+  font-variant: normal;
+  font-size: .9rem;
+}
+div {
+  text-align: center;
 }
 input, label {
   cursor: pointer;
+}
+input {
+  display: none;
+}
+label {
+  display: inline-block;
+  line-height: 1.5rem;
+  padding-left: 3.5rem;
+  position: relative;
+}
+label:before,
+label:after {
+  content: '';
+  display: block;
+  height: 1.5rem;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: all 0.4s;
+}
+label:before {
+  background: #C0C0C0;
+  border: 1px solid #999;
+  border-radius: 1rem;
+  width: 3rem;
+}
+label:after {
+  background: #FFF;
+  border-radius: 100%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  width: 1.5rem;
+}
+input[disabled] + label {
+  opacity: 0.5;
+}
+input:checked + label:before {
+  background: #CCA4D1;
+}
+input:checked + label:after {
+  transform: translate(1.5rem);
+}
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  padding: 1em 1em 0 0;
+}
+a {
+  border-bottom: 1px solid;
+  color: #CCA4D1;
+  text-decoration: none;
 }
 
   </style>
 </head>
 <body>
 
-<div>
-  <a href="https://github.com/electricg/push-notifications-client">View client code</a>
-</div>
-
-<div>
-  <a href="https://github.com/electricg/push-notifications-server">View server code</a>
-</div>
+<h1>Push Notifications Client</h1>
+<p>This is a push notifications demo app to show its implementation on the client and the server.</p>
+<hr>
 
 <div id="subscribe-wrapper" style="display: none;">
   <input type="checkbox" id="subscribe" disabled>
   <label for="subscribe"><span id="subscribe-label">Enable</span> Push notifications</label>
 </div>
 <div id="not-supported">Service Workers not supported</div>
+
+<hr>
+<nav>
+  <ul>
+    <li>
+      <a href="https://github.com/electricg/push-notifications-client" target="_blank">Client source code</a>
+    </li>
+    <li>
+      <a href="https://github.com/electricg/push-notifications-server" target="_blank">Server source code</a>
+    </li>
+  </ul>
+</nav>
 
 <script src="ui.js"></script>
 <script src="subscription.js"></script>
