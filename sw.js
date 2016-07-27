@@ -1,8 +1,10 @@
 /* global self, clients */
 var TITLE = 'Message from electric_g';
-var OPEN_URL = 'https://electricg.github.io/push-notifications-client/';
+var OPEN_URL = location.href.replace('sw.js', '');
 var BODY = 'Default push message';
 var ICON = 'icon.png';
+console.log(location);
+console.log(location.href.replace('sw.js', ''));
 
 self.addEventListener('install', function(event) {
   self.skipWaiting();
