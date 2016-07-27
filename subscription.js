@@ -1,4 +1,4 @@
-window.Subscription = function(remoteUrl, authHeader) {
+window.Subscription = function(remoteUrl, authHeader, store) {
   var sendPost = function(opt) {
     return new Promise(function(resolve, reject) {
       var request = new XMLHttpRequest();
@@ -7,17 +7,22 @@ window.Subscription = function(remoteUrl, authHeader) {
       request.responseType = 'json';
 
       request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
+        if (request.status === 200) {
           // Success!
           resolve(request.response);
         } else {
           // We reached our target server, but it returned an error
-          reject(request.response);
+          reject({
+            code: request.status,
+            message: request.response
+          });
         }
       };
 
-      request.onerror = function(err) {
-        reject(err);
+      request.onerror = function() {
+        reject({
+          message: 'An error occurred while trying to contact the registration server'
+        });
       };
 
       request.send(JSON.stringify(opt.data));
@@ -32,17 +37,22 @@ window.Subscription = function(remoteUrl, authHeader) {
       request.responseType = 'json';
 
       request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
+        if (request.status === 200) {
           // Success!
           resolve(request.response);
         } else {
           // We reached our target server, but it returned an error
-          reject(request.response);
+          reject({
+            code: request.code,
+            message: request.response
+          });
         }
       };
 
-      request.onerror = function(err) {
-        reject(err);
+      request.onerror = function() {
+        reject({
+          message: 'An error occurred while trying to contact the registration server'
+        });
       };
 
       request.send();
@@ -56,25 +66,18 @@ window.Subscription = function(remoteUrl, authHeader) {
     })
     .then(function(res) {
       if (res.status === 1 && res.id) {
-        try {
-          var o = {};
-          o[sub.endpoint] = res.id;
-          localStorage.setItem('pushNotificationId', JSON.stringify(o));
-        } catch(e) {
-          console.error(e);
-        }
+        var o = {};
+        o[sub.endpoint] = res.id;
+        store.set(o);
       }
       return res;
     });
   };
 
   this.cancelSubscriptionFromServer = function(sub) {
-    var o = {};
-    try {
-      o = JSON.parse(localStorage.getItem('pushNotificationId'));
-    } catch(e) {
-      console.error(e);
-      return Promise.reject(e);
+    var o = store.get();
+    if (o.status === false) {
+      return Promise.reject(o.error);
     }
     var id = o[sub.endpoint];
     return sendDelete({
@@ -82,11 +85,7 @@ window.Subscription = function(remoteUrl, authHeader) {
       auth: authHeader + 'endpoint=' + sub.endpoint + ',p256dh=' + sub.keys.p256dh + ',auth=' + sub.keys.auth 
     })
     .then(function(res) {
-      try {
-        localStorage.removeItem('pushNotificationId');
-      } catch(e) {
-        console.error(e);
-      }
+      store.remove();
       return res;
     });
   };

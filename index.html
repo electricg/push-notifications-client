@@ -97,6 +97,19 @@ a {
   color: #CCA4D1;
   text-decoration: none;
 }
+output {
+  background: #FFF;
+  border: 1px dashed #333;
+  display: none;
+  font-family: monospace;
+  font-size: .8rem;
+  font-variant: normal;
+  line-height: 1.5;
+  margin: 1em 0;
+  overflow: auto;
+  padding: 1em;
+  white-space: pre;
+}
 
   </style>
 </head>
@@ -108,11 +121,14 @@ a {
 
 <div id="subscribe-wrapper" style="display: none;">
   <input type="checkbox" id="subscribe" disabled>
-  <label for="subscribe"><span id="subscribe-label">Enable</span> Push notifications</label>
+  <label for="subscribe"><span id="subscribe-label">Subscribe</span> to Push notifications</label>
 </div>
 <div id="not-supported">Service Workers not supported</div>
 
 <hr>
+
+<output id="output"></output>
+
 <nav>
   <ul>
     <li>
@@ -124,14 +140,16 @@ a {
   </ul>
 </nav>
 
+<script src="store.js"></script>
 <script src="ui.js"></script>
 <script src="subscription.js"></script>
 <script src="notifications.js"></script>
 <script>
 var remoteUrl = 'https://ele-push-notifications-server.herokuapp.com';
 var authHeader = 'PUSH-NOTIFICATION ';
-var ui = new window.UI();
-var subscription = new window.Subscription(remoteUrl, authHeader);
+var store = new window.Store();
+var ui = new window.UI(store);
+var subscription = new window.Subscription(remoteUrl, authHeader, store);
 var notifications = new window.Notifications(ui, subscription);
 
 // Are service workers supported?

@@ -1,10 +1,12 @@
-window.UI = function() {
+window.UI = function(store) {
   var $$ = document.querySelector.bind(document);
 
   var $subscribe = $$('#subscribe');
   var $subscribeWrapper = $$('#subscribe-wrapper');
   var $subscribeLabel = $$('#subscribe-label');
   var $notSupported = $$('#not-supported');
+  var $output = $$('#output');
+  var _this = this;
 
   this.notSupported = function(msg) {
     $notSupported.innerHTML = msg;
@@ -18,14 +20,38 @@ window.UI = function() {
     $subscribe.disabled = false;
   };
 
-  this.subscribed = function() {
+  this.subscribed = function(data) {
+    var o = store.get();
+    if (o.status !== false) {
+      data.id = o[data.endpoint];
+    }
+    _this.status('You are subscribed', data);
     $subscribe.checked = true;
-    $subscribeLabel.innerHTML = 'Disable';
+    $subscribeLabel.innerHTML = 'Unsubscribe';
   };
 
   this.unsubscribed = function() {
+    _this.status('You are unsubscribed');
     $subscribe.checked = false;
-    $subscribeLabel.innerHTML = 'Enable';
+    $subscribeLabel.innerHTML = 'Subscribe';
+  };
+
+  this.showOutput = function(show) {
+    if (show) {
+      $output.style.display = 'block';
+    }
+    else {
+      $output.style.display = '';
+    }
+  };
+
+  this.status = function(title, msg) {
+    _this.showOutput(true);
+    var txt = title;
+    if (msg) {
+      txt += '\n' + JSON.stringify(msg, null, 2);
+    }
+    $output.innerHTML = txt;
   };
 
   this.load = function() {
@@ -34,6 +60,15 @@ window.UI = function() {
   };
 
   this.action = function(cb) {
-    $subscribe.addEventListener('click', cb);
+    $subscribe.addEventListener('click', function(event) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      }
+      else {
+        event.returnValue = false;
+      }
+      _this.showOutput(false);
+      cb();
+    });
   };
 };

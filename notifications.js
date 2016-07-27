@@ -3,7 +3,6 @@ window.Notifications = function(ui, s) {
   var isPushEnabled = false;
 
   function sendSubscriptionToServer(sub) {
-    console.log(sub);
     return s.sendSubscriptionToServer(sub);
   }
   function cancelSubscriptionFromServer(sub) {
@@ -50,7 +49,8 @@ window.Notifications = function(ui, s) {
         // return sendSubscriptionToServer(sub);
 
         // Set your UI to show they have subscribed for push messages
-        ui.subscribed();
+        var sub = JSON.parse(JSON.stringify(subscription));
+        ui.subscribed(sub);
         isPushEnabled = true;
       })
       .catch(function(err) {
@@ -64,15 +64,20 @@ window.Notifications = function(ui, s) {
     ui.enable();
 
     navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+      var _subscription;
+      var _sub;
+      // Subscribe the browser
       serviceWorkerRegistration.pushManager.subscribe({ userVisibleOnly: true })
+      // Send the subscription.endpoint to the server to save it in the db
       .then(function(subscription) {
-        // The subscription was successful
-        ui.subscribed();
+        _subscription = subscription;
+        _sub = JSON.parse(JSON.stringify(subscription));
+        return sendSubscriptionToServer(_sub);
+      })
+      // The subscription was successful, show it
+      .then(function() {
+        ui.subscribed(_sub);
         isPushEnabled = true;
-
-        // TODO: Send the subscription.endpoint to your server and save it to send a push message at a later date
-        var sub = JSON.parse(JSON.stringify(subscription));
-        return sendSubscriptionToServer(sub);
       })
       .catch(function(err) {
         if (Notification.permission === 'denied') {
@@ -80,16 +85,18 @@ window.Notifications = function(ui, s) {
           // means we failed to subscribe and the user will need  
           // to manually change the notification permission to  
           // subscribe to push messages  
-          console.warn('Permission for Notifications was denied');
+          ui.status('Permission for Notifications was denied by the user');
           ui.disable();
         }
         else {
           // A problem occurred with the subscription; common reasons  
           // include network errors, and lacking gcm_sender_id and/or  
           // gcm_user_visible_only in the manifest.  
-          console.error('Unable to subscribe to push.', err);
-          ui.enable();
+          ui.status('Unable to subscribe to push', err);
+          _subscription.unsubscribe();
           ui.unsubscribed();
+          isPushEnabled = false;
+          ui.enable();
         }
       });
     });
@@ -111,10 +118,6 @@ window.Notifications = function(ui, s) {
         }
 
         var sub = JSON.parse(JSON.stringify(subscription));
-        // TODO: Make a request to your server to remove
-        // the subscriptionId from your data store so you
-        // don't attempt to send them push messages anymore
-        cancelSubscriptionFromServer(sub);
 
         // We have a subscription, so call unsubscribe on it
         subscription.unsubscribe()
@@ -123,6 +126,12 @@ window.Notifications = function(ui, s) {
             ui.unsubscribed();
             isPushEnabled = false;
             ui.enable();
+
+            // Make a request to your server to remove
+            // the subscriptionId from your data store so you
+            // don't attempt to send them push messages anymore.
+            // The client doesn't care about the success of this
+            cancelSubscriptionFromServer(sub);
           }
         })
         .catch(function(err) {
