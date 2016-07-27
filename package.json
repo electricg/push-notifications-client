@@ -3,9 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "description": "Push notifications client",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
-    "start": "python -m SimpleHTTPServer 8085"
+    "start": "node ."
   },
   "author": "Giulia Alfonsi",
   "license": "MIT",
@@ -13,5 +13,8 @@
     "type": "git",
     "url": "https://github.com/electricg/push-notifications-client.git"
   },
-  "homepage": "https://github.com/electricg/push-notifications-client#readme"
+  "homepage": "https://github.com/electricg/push-notifications-client#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
 }
