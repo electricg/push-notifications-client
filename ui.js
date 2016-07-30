@@ -26,13 +26,11 @@ window.UI = function(store) {
       data.id = o[data.endpoint];
     }
     _this.status('You are subscribed', data);
-    $subscribe.checked = true;
     $subscribeLabel.innerHTML = 'Unsubscribe';
   };
 
   this.unsubscribed = function() {
     _this.status('You are unsubscribed');
-    $subscribe.checked = false;
     $subscribeLabel.innerHTML = 'Subscribe';
   };
 

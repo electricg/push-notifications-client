@@ -40,49 +40,26 @@ p {
 div {
   text-align: center;
 }
-input, label {
+button {
+  background: #CCA4D1; 
+  border: 1px solid rgba(51, 51, 51, .5);
+  border-radius: 3px;
   cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-variant: inherit;
+  max-width: 350px;
+  padding: .3em;
+  width: 100%;
+  -webkit-appearance: none;
 }
-input {
-  display: none;
+button:hover, button:active, button:focus {
+  color: #FFF;
+  text-shadow: 1px 1px 1px rgba(51, 51, 51, .5);
 }
-label {
-  display: inline-block;
-  line-height: 1.5rem;
-  padding-left: 3.5rem;
-  position: relative;
-}
-label:before,
-label:after {
-  content: '';
-  display: block;
-  height: 1.5rem;
-  left: 0;
-  position: absolute;
-  top: 0;
-  transition: all 0.4s;
-}
-label:before {
-  background: #C0C0C0;
-  border: 1px solid #999;
-  border-radius: 1rem;
-  width: 3rem;
-}
-label:after {
-  background: #FFF;
-  border-radius: 100%;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  width: 1.5rem;
-}
-input[disabled] + label {
+button[disabled] {
   cursor: not-allowed;
   opacity: 0.5;
-}
-input:checked + label:before {
-  background: #CCA4D1;
-}
-input:checked + label:after {
-  transform: translate(1.5rem);
 }
 ul, li {
   list-style: none;
@@ -121,8 +98,7 @@ output {
 <hr>
 
 <div id="subscribe-wrapper" style="display: none;">
-  <input type="checkbox" id="subscribe" disabled>
-  <label for="subscribe"><span id="subscribe-label">Subscribe</span> to Push notifications</label>
+  <button id="subscribe"><span id="subscribe-label">Subscribe</span></button>
 </div>
 <div id="not-supported">Service Workers not supported</div>
 
