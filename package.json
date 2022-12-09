@@ -15,6 +15,6 @@
   },
   "homepage": "https://github.com/electricg/push-notifications-client#readme",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.17.3"
   }
 }
